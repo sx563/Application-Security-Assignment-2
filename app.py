@@ -139,7 +139,11 @@ def spell_check():
         return redirect(url_for("login"))
     
 
-
+@app.route("/logout")
+def logout():
+    session.pop("username", None)
+    flash("Success: User logged out", "success")
+    return redirect(url_for("login"))
     
 if __name__ == "__main__":
     app.run(debug=True)

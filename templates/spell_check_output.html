@@ -4,7 +4,10 @@ Spell Check Results
 {% endblock %}
 {% block content %}
 
-    <h2>Spell Check Results</h2>
+    <h2>
+        Spell Check Results
+        <a href="{{url_for('logout')}}">Logout</a>
+    </h2>
     <p>
         Input Text:
         <textarea name="textout" id="textout">{{textout}}</textarea><br><br>
