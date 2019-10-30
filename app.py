@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import escape
 import subprocess 
 from flask_wtf import CSRFProtect
 import secrets
 from passlib.hash import sha256_crypt
+
 
 class User:
     def __init__(self, username, password, twofa):
@@ -54,6 +56,10 @@ app = Flask(__name__)
 app.secret_key = secrets.token_urlsafe(256)
 csrf = CSRFProtect(app)
 
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    REMEMBER_COOKIE_HTTPONLY = True
+)
 
 @app.after_request
 def add_custom_headers(response):
@@ -75,9 +81,9 @@ def register():
     if "username" in session:
         return redirect(url_for("spell_check"))
     if request.method == "POST":
-        username = request.form["uname"]
-        password = request.form["pword"]
-        twofa = request.form["2fa"]
+        username = escape(request.form["uname"])
+        password = escape(request.form["pword"])
+        twofa = escape(request.form["2fa"])
         if not username or not password or not twofa:
             flash("Failure: Empty Field(s)", "failure")
             return render_template("register.html")
@@ -96,9 +102,9 @@ def login():
     if "username" in session:
         return redirect(url_for("spell_check"))
     if request.method == "POST":
-        username = request.form["uname"]
-        password = request.form["pword"]
-        twofa = request.form["2fa"]
+        username = escape(request.form["uname"])
+        password = escape(request.form["pword"])
+        twofa = escape(request.form["2fa"])
         if not username or not password or not twofa:
             flash("Failure: Empty Field(s)", "failure")
             return render_template("login.html")
