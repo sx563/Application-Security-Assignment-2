@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, 
 import subprocess 
 from flask_wtf import CSRFProtect
 import secrets
@@ -56,9 +56,13 @@ csrf = CSRFProtect(app)
 
 
 @app.after_request
-def add_custom_header(response):
+def add_custom_headers(response):
     response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Content-Security-Policy"] = "default-src 'self'"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
     return response
+
 
 
 @app.route("/")
@@ -120,8 +124,6 @@ def spell_check():
             if not textout:
                 flash("Failure: Empty Field", "failure")
                 return render_template("spell_check_input.html")
-            
-            
             spell_check_file_path = "./a.out"
             text_file_path = "./static/inputtext.txt"
             dict_file_path = "./static/wordlist.txt"
@@ -141,7 +143,7 @@ def spell_check():
 
 @app.route("/logout")
 def logout():
-    session.pop("username", None)
+    session.clear()
     flash("Success: User logged out", "success")
     return redirect(url_for("login"))
     
