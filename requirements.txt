@@ -2,3 +2,4 @@ flask
 tox
 tox-travis
 flask_wtf 
+bs4
