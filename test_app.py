@@ -79,10 +79,14 @@ class TestCasesFlaskApp(unittest.TestCase):
         self.assertIn(b"Spell Check", post_result.data)
         self.assertIn(b"Success: User logged in", post_result.data)
 
-    """
+    
     def test_login_invalid_credentials(self):
         self.register_user()
+        get_result = self.app.get("/login")
+        html = BeautifulSoup(get_result.data,"html.parser")
+        csrf_token = html.find(id="csrf_token").get("value")
         data = {
+            "csrf_token": csrf_token,
             "uname": "jack",
             "pword": "testpassword",
             "2fa": "00000000000"
@@ -90,21 +94,38 @@ class TestCasesFlaskApp(unittest.TestCase):
 
         original_pword = data["pword"]
         data["pword"] = "wrongpassword"
-
+        
+        data["csrf_token"] = csrf_token
         post_result2 = self.app.post("/login", data=data)
         self.assertIn(b"Failure: Incorrect password", post_result2.data)
 
+
         data["pword"] = original_pword
         data["2fa"] = "1-111-111-1111"
+
+        get_result2 = self.app.get("/login")
+        html2 = BeautifulSoup(get_result2.data,"html.parser")
+        csrf_token = html2.find(id="csrf_token").get("value")
+        data["csrf_token"] = csrf_token
         post_result3 = self.app.post("/login", data=data)
         self.assertIn(b"Failure: Incorrect Two-factor", post_result3.data)
 
+
         data["uname"] = "notjack"
+
+        get_result3 = self.app.get("/login")
+        html3 = BeautifulSoup(get_result3.data,"html.parser")
+        csrf_token = html3.find(id="csrf_token").get("value")
+        data["csrf_token"] = csrf_token
         post_result3 = self.app.post("/login", data=data)
         self.assertIn(b"Failure: Incorrect username", post_result3.data)
 
     def test_empty_fields(self):
+        get_result = self.app.get("/register")
+        html = BeautifulSoup(get_result.data,"html.parser")
+        csrf_token = html.find(id="csrf_token").get("value")
         data = {
+            "csrf_token": csrf_token,
             "uname": "",
             "pword": "",
             "2fa": ""
@@ -113,9 +134,13 @@ class TestCasesFlaskApp(unittest.TestCase):
         post_result = self.app.post("/register", data=data)
         self.assertIn(b"Failure: Empty Field(s)", post_result.data)
 
+        get_result2 = self.app.get("/login")
+        html2 = BeautifulSoup(get_result2.data,"html.parser")
+        csrf_token = html2.find(id="csrf_token").get("value")
+        data["csrf_token"] = csrf_token
         post_result2 = self.app.post("/login", data=data)
         self.assertIn(b"Failure: Empty Field(s)", post_result2.data)
-    """
+    
 
     def logged_in_user(self):
         self.register_user()
