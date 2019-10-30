@@ -155,6 +155,23 @@ class TestCasesFlaskApp(unittest.TestCase):
         }
         post_result = self.app.post("/login", data=data, follow_redirects=True)
 
+    def test_logout(self):
+        self.logged_in_user()
+        post_result = self.app.get("/logout", follow_redirects=True)
+        self.assertIn(b"Login", post_result.data)
+        post_result2 = self.app.get("/spell_check", follow_redirects=True)
+        self.assertIn(b"Login", post_result2.data)
+
+
+    def test_session_saved_logged_in_user(self):
+        self.logged_in_user()
+        post_result = self.app.get("/register", follow_redirects=True)
+        self.assertIn(b"Spell Check", post_result.data)
+        post_result2 = self.app.get("/login", follow_redirects=True)
+        self.assertIn(b"Spell Check", post_result2.data)
+        post_result3 = self.app.get("/", follow_redirects=True)
+        self.assertIn(b"Spell Check", post_result3.data)
+
 
 
     def test_spell_check(self):
