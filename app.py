@@ -73,7 +73,7 @@ def add_custom_headers(response):
 
 @app.route("/")
 def home(): 
-    return redirect(url_for("login"))
+    return redirect(url_for("register"))
 
 
 @app.route("/register", methods = ["GET", "POST"])
