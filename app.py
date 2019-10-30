@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import subprocess 
 from flask_wtf import CSRFProtect
 import secrets
+from passlib.hash import sha256_crypt
 
 class User:
     def __init__(self, username, password, twofa):
@@ -24,11 +25,11 @@ def isRegisteredUser(username):
 
 def addUser(username, password, twofa):
     global Users
-    Users[username] = User(username, password, twofa)
+    Users[username] = User(username, sha256_crypt.hash(password), twofa)
 
 def checkPassword(username, password):
     global Users
-    if password == Users[username].getPassword():
+    if sha256_crypt.verify(password, Users[username].getPassword()):
         return True
     else:
         return False
@@ -55,7 +56,7 @@ csrf = CSRFProtect(app)
 
 
 @app.after_request
-def add_custom_headers(response):
+def add_custom_header(response):
     response.headers["X-XSS-Protection"] = "1; mode=block"
     return response
 
