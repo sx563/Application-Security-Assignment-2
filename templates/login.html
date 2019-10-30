@@ -5,6 +5,7 @@ Login
 {% block content %}
     <h2>Login</h2>
     <form action="" method="post">
+        <input type="hidden" name="csrf_token" id="csrf_token" value="{{csrf_token()}}"/>
         Username:
         <input type="text" name="uname" id="uname"><br><br>
         Password:

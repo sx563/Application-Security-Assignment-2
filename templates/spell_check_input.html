@@ -5,6 +5,7 @@ Spell Check
 {% block content %}
     <h2>Spell Check</h2>
     <form action="" method="post">
+        <input type="hidden" name="csrf_token" id="csrf_token" value="{{csrf_token()}}"/>
         Input Text:
         <textarea name="inputtext" id="inputtext"></textarea><br><br>
         <input type="submit" value="Submit"><br><br>

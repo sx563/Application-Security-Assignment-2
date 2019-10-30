@@ -1,4 +1,4 @@
 flask
 tox
 tox-travis
-passlib
+flask_wtf 

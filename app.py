@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import subprocess 
+from flask_wtf import CSRFProtect
 
 
 class User:
@@ -50,6 +51,7 @@ def isValidTwoFA(twofa):
 
 app = Flask(__name__)
 app.secret_key = "myappsecretkey"
+csrf = CSRFProtect(app)
 
 @app.route("/")
 def home(): 
