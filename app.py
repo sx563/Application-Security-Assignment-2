@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import subprocess 
 from flask_wtf import CSRFProtect
+import secrets
 
 class User:
     def __init__(self, username, password, twofa):
@@ -49,12 +50,12 @@ def isValidTwoFA(twofa):
 
 
 app = Flask(__name__)
-app.secret_key = "myappsecretkey"
+app.secret_key = secrets.token_urlsafe(256)
 csrf = CSRFProtect(app)
 
 
 @app.after_request
-def add_custom_header(response):
+def add_custom_headers(response):
     response.headers["X-XSS-Protection"] = "1; mode=block"
     return response
 
