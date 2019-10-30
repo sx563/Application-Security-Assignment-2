@@ -1,0 +1,4 @@
+flask
+tox
+tox-travis
+passlib
